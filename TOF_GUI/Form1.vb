@@ -48,17 +48,21 @@ Public Class Form1
                                    radius * 2, radius * 2)
 
             If j >= 100 Then
+                'Label Horizontal
                 g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, x - 32, Convert.ToInt32(PictureBox1.Size.Height \ 2) - 10)
                 g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, (Convert.ToInt32(PictureBox1.Size.Width \ 2) + radius) - 1, Convert.ToInt32(PictureBox1.Size.Height \ 2) - 10)
 
-                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 18, y - 17)
-                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 18, Convert.ToInt32(PictureBox1.Size.Height \ 2) + radius)
+                'Label Vertical
+                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 16, y - 17)
+                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 16, Convert.ToInt32(PictureBox1.Size.Height \ 2) + radius)
             Else
-                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, x - 22, Convert.ToInt32(PictureBox1.Size.Height \ 2) - 10)
-                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, (Convert.ToInt32(PictureBox1.Size.Width \ 2) + radius) - 2, Convert.ToInt32(PictureBox1.Size.Height \ 2) - 10)
+                'Label Horizontal
+                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, x - 21, Convert.ToInt32(PictureBox1.Size.Height \ 2) - 10)
+                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, (Convert.ToInt32(PictureBox1.Size.Width \ 2) + radius), Convert.ToInt32(PictureBox1.Size.Height \ 2) - 10)
 
-                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 13, y - 17)
-                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 13, Convert.ToInt32(PictureBox1.Size.Height \ 2) + radius)
+                'Label Vertical
+                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 11, y - 17)
+                g.DrawString(Convert.ToString(j), New Font("Arial", 11), Brushes.Green, Convert.ToInt32(PictureBox1.Size.Width \ 2) - 11, Convert.ToInt32(PictureBox1.Size.Height \ 2) + radius)
             End If
 
             j += 20
