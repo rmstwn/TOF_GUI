@@ -38,7 +38,7 @@ Public Class Form1
         Dim i As Integer
         Dim j As Integer = 10
 
-        For i = 20 To 900 Step 25
+        For i = 20 To 900 Step 40
             radius = i * ratio
 
             x = Convert.ToInt32(PictureBox1.Size.Width \ 2) - radius
@@ -69,10 +69,35 @@ Public Class Form1
 
         Next
 
+        Dim RealDistance(80) As Double
+        Dim Distance(80) As Double
+        Dim Angle As Double
+
+
+        For i = 0 To 79
+            RealDistance(i) = 90
+
+            Distance(i) = (RealDistance(i) * 2)
+
+            Angle = (i * 4.5) - 360
+
+            Dim Point As New Point(Convert.ToInt32(PictureBox1.Size.Width \ 2) + Distance(i) * Math.Cos(Angle * Math.PI / 180), Convert.ToInt32(PictureBox1.Size.Height \ 2) + Distance(i) * Math.Sin(Angle * Math.PI / 180))
+
+            DrawPoint(Point, gr, Color.Red)
+        Next
+
         'PictureBox1.Invalidate()
         'myPen.Dispose()
 
         gr.Dispose()
+    End Sub
+
+    Private Sub DrawPoint(ByVal pt As Point, ByVal G As Graphics, ByVal clr As Color)
+        Dim rc As New Rectangle(pt, New Size(1, 1))
+        rc.Inflate(3, 3)
+        Using brsh As New SolidBrush(clr)
+            G.FillEllipse(brsh, rc)
+        End Using
     End Sub
 
     Private Sub PictureBox1_MouseWheel(sender As Object, e As MouseEventArgs) Handles PictureBox1.MouseWheel
