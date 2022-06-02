@@ -1,4 +1,7 @@
 ﻿Imports System.ComponentModel
+Imports System.Threading
+Imports System.IO
+Imports System.IO.Ports
 
 Public Class Form1
     Dim myPen As New Pen(Color.Green, 2)
@@ -18,6 +21,9 @@ Public Class Form1
     Dim Angle As Double
 
     Dim random As New Random()
+
+    Dim SerialPort1 As New SerialPort
+
 
     'Private Sub DrawCircle(ByVal gr As Graphics, ByVal ratio As Integer)
 
@@ -150,6 +156,35 @@ Public Class Form1
         End Using
     End Sub
 
+    Private Sub DrawDataPos(ByVal data As String, ByVal ratio As Integer)
+        g = PictureBox2.CreateGraphics()
+
+        Dim result As String() = data.Split(New String() {","}, StringSplitOptions.None)
+
+        For i = 0 To 79
+            'RealDistance(i) = random.Next(10, 200)
+            'RealDistance(i) = 50
+            RealDistance(i) = Convert.ToInt32(result(i)) \ 10
+
+            Distance(i) = (RealDistance(i) * 2) * ratio
+
+            Angle = (i * 4.5) - 360
+
+            Dim Point As New Point(Convert.ToInt32(PictureBox2.Size.Width \ 2) + Distance(i) * Math.Cos(Angle * Math.PI / 180), Convert.ToInt32(PictureBox2.Size.Height \ 2) + Distance(i) * Math.Sin(Angle * Math.PI / 180))
+
+            DrawPoint(Point, g, Color.Red)
+        Next
+
+        PictureBox2.Invalidate()
+    End Sub
+
+
+
+    Private Sub ScanPort()
+        CBoxCOMPort.Items.Clear()
+        CBoxCOMPort.Items.AddRange(Ports.SerialPort.GetPortNames())
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         PictureBox1.Size = New Size(Me.Width, Me.Height)
         PictureBox1.Image = Nothing
@@ -164,6 +199,14 @@ Public Class Form1
 
         SetStyle(ControlStyles.DoubleBuffer, True)
         Me.DoubleBuffered = True
+
+        Call ScanPort()
+
+        CBoxBAUDRate.Items.Add("2400")
+        CBoxBAUDRate.Items.Add("4800")
+        CBoxBAUDRate.Items.Add("9600")
+        CBoxBAUDRate.Items.Add("115200")
+        CBoxBAUDRate.Items.Add("1000000")
 
     End Sub
 
@@ -204,25 +247,54 @@ Public Class Form1
     End Sub
 
     Private Sub PictureBox2_Paint(sender As Object, e As PaintEventArgs) Handles PictureBox2.Paint
-        g = PictureBox2.CreateGraphics()
 
-        For i = 0 To 79
-            RealDistance(i) = Random.Next(10, 200)
-            'RealDistance(i) = 50
 
-            Distance(i) = (RealDistance(i) * 2)
-
-            Angle = (i * 4.5) - 360
-
-            Dim Point As New Point(Convert.ToInt32(PictureBox2.Size.Width \ 2) + Distance(i) * Math.Cos(Angle * Math.PI / 180), Convert.ToInt32(PictureBox2.Size.Height \ 2) + Distance(i) * Math.Sin(Angle * Math.PI / 180))
-
-            DrawPoint(Point, g, Color.Red)
-        Next
-
-        'bg.Dispose()
-        PictureBox2.Invalidate()
-
-        'Threading.Thread.Sleep(50)
     End Sub
 
+    Private Sub BtnScanPORT_Click(sender As Object, e As EventArgs) Handles BtnScanPORT.Click
+        Call ScanPort()
+    End Sub
+
+    Private Sub BtnOpenPORT_Click(sender As Object, e As EventArgs) Handles BtnOpenPORT.Click
+        Try
+            If Not SerialPort1.IsOpen Then
+                With SerialPort1
+                    .PortName = CBoxCOMPort.Text
+                    .BaudRate = CBoxBAUDRate.Text
+                    .Parity = IO.Ports.Parity.None
+                    .DataBits = 8
+                    .StopBits = IO.Ports.StopBits.Two
+                    .Open()
+                End With
+
+                BackgroundWorker1.RunWorkerAsync()
+
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub BackgroundWorker1_DoWork(sender As Object, e As DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+        Dim readBuffer As String
+
+        TextBox.CheckForIllegalCrossThreadCalls = False
+
+        Do
+            'System.Threading.Thread.Sleep(10)
+            Application.DoEvents()
+
+            Try
+                readBuffer = SerialPort1.ReadLine()
+
+                Call DrawDataPos(readBuffer, counter)
+
+                TextBox2.Text = readBuffer
+
+            Catch ex As Exception
+
+            End Try
+
+        Loop
+    End Sub
 End Class
